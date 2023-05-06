@@ -4,9 +4,9 @@
 #define TINY_GSM_MODEM_SIM900
 #define SerialMon Serial
 
-#define TOKEN "token"
-#define THINGSBOARD_SERVER "ip"
-#define THINGSBOARD_PORT port
+#define TOKEN "b8n8FRtZeBWcPrv7MIoj"
+#define THINGSBOARD_SERVER "demo.thingsboard.io"
+#define THINGSBOARD_PORT 80
 
 //Defining Pins.
 #define dhtPin 2
@@ -30,7 +30,7 @@ float lonVal = 0.0;
 const char apn[] = "web";
 const char user[] = "";
 const char pass[] = "";
-const char server[] = "103.90.84.161";
+const char server[] = "demo.thingsboard.io";
 
 //For debugging.
 #ifdef DUMP_AT_COMMANDS
@@ -45,7 +45,7 @@ TinyGsmClientSecure client(modem);
 const int port = 443;
 #else
 TinyGsmClient client(modem);
-const int port = 8080;
+const int port = 80;
 #endif
 
 //Creating objects.
@@ -88,8 +88,6 @@ void loop() {
 
   //Getting temperature data.
   tempVal = dht.readTemperature();
-  Serial.print("Temperature Value : ");
-  Serial.println(tempVal);
 
   //Getting latitude and longitude.
   gps.f_get_position(&latVal, &lonVal);
@@ -118,12 +116,6 @@ void loop() {
   tb.sendTelemetryFloat("latitude", latVal);
   tb.sendTelemetryFloat("longitude", lonVal);
   tb.sendTelemetryFloat("temperature", tempVal);
-
-  Serial.print("Latitude : ");
-  Serial.print(latVal);
-
-  Serial.print(" ,Longitude : ");
-  Serial.println(lonVal);
 
   smartDelay(1000);
 }
