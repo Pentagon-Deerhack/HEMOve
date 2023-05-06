@@ -1,22 +1,12 @@
 import cv2
-import webbrowser
 import json
-import time
 import requests
+import time
 from requests.structures import CaseInsensitiveDict
 
-
-
-
-
 url = "https://demo.thingsboard.io/api/v1/Yn5VHwYZhjyl8zpcHF4T/telemetry"
-
 headers = CaseInsensitiveDict()
 headers["Content-Type"] = "application/json"
-
-
-
-
 
 # Initialize the cv2 QRCode detector
 detector = cv2.QRCodeDetector()
@@ -38,10 +28,6 @@ delay_time = 5
 # Set the start time to the current time
 start_time = time.time()
 
-#Declaring variables.
-keys = []
-values = []
-
 while True:
     # Read the image from the webcam
     ret, img = cap.read()
@@ -60,29 +46,29 @@ while True:
         # Convert the data string to a dictionary
         data_dict = eval(data)
 
-        #Loading the json data
+        # Loading the json data
         json_data = json.loads(data)
 
-        keys.clear()
-        values.clear()
+        # Extracting the keys and values from the json data
+        keys = []
+        values = []
+        for key, value in json_data.items():
+            keys.append(key)
+            values.append(value)
 
-        #Extracting the keys and values from the json data
-        items = json_data.items()
-        for item in items:
-            keys.append(item[0]), values.append(item[1])
+        # Constructing the data string to be sent
+        data = {}
+        for i in range(len(keys)):
+            data[keys[i]] = values[i]
 
-        print("keys : ", str(keys))
-        print("values : ", str(values))
-
-        data = '{""+ str(keys[0]) + "": str(values[0])}'
-
-        resp = requests.post(url, headers=headers, data=data)
-
-
-
+        # Sending the data to Thingsboard
+        response = requests.post(url, headers=headers, json=data)
+        print(response.status_code)
+        
         # Set the start time to the current time
         start_time = time.time()
 
+    # Draw the scanner window
     cv2.rectangle(img, (scan_x, scan_y), (scan_x+scan_width, scan_y+scan_height), (255, 0, 0), 2)
 
     # Show the image in a window
@@ -91,7 +77,6 @@ while True:
     # Exit the loop if the "s" key is pressed
     if cv2.waitKey(1) & 0xFF == ord("s"):
         break
-
 # Release the webcam and close the window
 cap.release()
 cv2.destroyAllWindows()
