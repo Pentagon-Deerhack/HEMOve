@@ -2,6 +2,21 @@ import cv2
 import webbrowser
 import json
 import time
+import requests
+from requests.structures import CaseInsensitiveDict
+
+
+
+
+
+url = "https://demo.thingsboard.io/api/v1/Yn5VHwYZhjyl8zpcHF4T/telemetry"
+
+headers = CaseInsensitiveDict()
+headers["Content-Type"] = "application/json"
+
+
+
+
 
 # Initialize the cv2 QRCode detector
 detector = cv2.QRCodeDetector()
@@ -58,6 +73,11 @@ while True:
 
         print("keys : ", str(keys))
         print("values : ", str(values))
+
+        data = '{""+ str(keys[0]) + "": str(values[0])}'
+
+        resp = requests.post(url, headers=headers, data=data)
+
 
 
         # Set the start time to the current time
